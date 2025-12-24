@@ -23,7 +23,7 @@
         body { background-color: #f8fafc; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; overflow: hidden; }
         
         /* Loader */
-        #loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.8s ease-out, visibility 0.8s; }
+        #loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.8s ease-out, visibility 0.8s; }
         .loader-icon-bg { background: white; width: 100px; height: 100px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .progress-container { width: 200px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden; margin-top: 20px; }
         .progress-bar { height: 100%; width: 0%; background: white; border-radius: 10px; animation: load 2.5s ease-in-out forwards; }
@@ -40,11 +40,14 @@
         .doctor-stamp { border: 3px solid #003366; color: #003366; padding: 4px 6px; display: flex; align-items: center; gap: 6px; font-family: 'Arial Black', sans-serif; font-weight: 900; text-transform: uppercase; line-height: 1.1; font-size: 9px; transform: rotate(-12deg); max-width: 260px; filter: url(#stamp-texture); mix-blend-mode: multiply; opacity: 0.95; }
         .stamp-logo { height: 35px; width: auto; filter: grayscale(100%) sepia(100%) hue-rotate(190deg) saturate(1000%) brightness(40%) contrast(120%); }
         .svg-filters { position: absolute; width: 0; height: 0; overflow: hidden; }
+        .swal2-container {
+            z-index: 100000 !important;
+        }
         @media print { @page { margin: 0; size: letter; } body { background: white; -webkit-print-color-adjust: exact; } .no-print { display: none !important; } .print-area { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; padding: 0.5cm !important; display: block; background: white !important; } .paper { box-shadow: none !important; margin: 0 auto !important; border: none !important; } }
     </style>
 </head>
 <body>
-    <div id="loader-wrapper"><div class="loader-content"><div class="loader-icon-bg"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg></div><h1 class="text-4xl font-extrabold mb-1">Cocina Express</h1><p class="text-sm opacity-90 tracking-widest uppercase">Conectando...</p><div class="progress-container"><div class="progress-bar"></div></div></div></div>
+    <div id="loader-wrapper"><div class="loader-content"><div class="loader-icon-bg"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg></div><h1 class="text-4xl font-extrabold mb-1">Cocina Express</h1><p class="text-sm opacity-90 tracking-widest uppercase">Conectando...</p><div class="progress-container"><div class="progress-bar"></div></div></div></div>
     <svg class="svg-filters" xmlns="http://www.w3.org/2000/svg"><defs><filter id="stamp-texture"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="1" result="noise" /><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.3 0.7" in="noise" result="alphaNoise" /><feComposite operator="in" in="SourceGraphic" in2="alphaNoise" /></filter></defs></svg>
     <div id="root"></div>
 
@@ -102,6 +105,41 @@
                 </svg>
             );
         };
+        
+                        // ==========================================
+        // FUNCIONES GLOBALES (SIN "ENLACE PÁGINA DICE")
+        // ==========================================
+                const myAlert = (msg, icon='success') => {
+            if(window.Swal) return window.Swal.fire({ title: 'Aviso', text: msg, icon: icon, confirmButtonColor: '#0f172a', heightAuto: false });
+            alert(msg); return Promise.resolve();
+        };
+
+        const myConfirm = async (msg) => {
+            if(window.Swal) {
+                const res = await window.Swal.fire({ title: 'Confirmar', text: msg, icon: 'question', showCancelButton: true, confirmButtonColor: '#0f172a', cancelButtonColor: '#64748b', confirmButtonText: 'Sí', cancelButtonText: 'Cancelar', heightAuto: false });
+                return res.isConfirmed;
+            }
+            return confirm(msg);
+        };
+
+        const myPrompt = async (title, value = '', type = 'text') => {
+            if(window.Swal) {
+                const res = await window.Swal.fire({
+                    title: title,
+                    input: type,
+                    inputValue: value,
+                    showCancelButton: true,
+                    confirmButtonColor: '#0f172a',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    heightAuto: false
+                });
+                return res.isConfirmed ? res.value : null;
+            }
+            return prompt(title, value);
+        };
+
 
         // ==========================================
         // CONSTANTES DE CONFIGURACIÓN
@@ -157,58 +195,60 @@
         // 2. COMPONENTES
         // ==========================================
 
-        const AuthScreen = ({ onLoginSuccess }) => {
-            const [isRegistering, setIsRegistering] = useState(false);
+                const AuthScreen = ({ onLoginSuccess }) => {
+            const [isLogin, setIsLogin] = useState(true);
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
-            const [error, setError] = useState('');
-            const [message, setMessage] = useState('');
 
-            const handleSubmit = async (e) => {
-                e.preventDefault(); setError(''); setMessage('');
+            const handleAuth = async (e) => {
+                e.preventDefault();
                 try {
-                    if (isRegistering) {
-                        const cred = await auth.createUserWithEmailAndPassword(email, password);
-                        await cred.user.sendEmailVerification();
-                        await db.collection('users').doc(cred.user.uid).set({ 
-                            balance: 0, 
-                            earnings: 0, 
-                            email: email,
-                            role: 'user',
+                    if (isLogin) {
+                        const userCred = await auth.signInWithEmailAndPassword(email, password);
+                        if (!userCred.user.emailVerified && email !== "mrandroidtutorialeshd@gmail.com") {
+                            myAlert("⚠️ Verifica tu correo electrónico antes de entrar.", 'warning');
+                            auth.signOut();
+                        } else {
+                            onLoginSuccess(userCred.user);
+                        }
+                    } else {
+                        const userCred = await auth.createUserWithEmailAndPassword(email, password);
+                        await userCred.user.sendEmailVerification();
+                        await db.collection('users').doc(userCred.user.uid).set({
+                            email, balance: 0, role: 'user', membership: 'Cliente',
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                        setMessage("✅ Cuenta creada. Verifica tu correo."); setIsRegistering(false);
-                    } else {
-                        const cred = await auth.signInWithEmailAndPassword(email, password);
-                        if (cred.user.emailVerified || cred.user.email === ADMIN_EMAIL) onLoginSuccess(cred.user);
-                        else { setMessage("⚠️ Verifica tu correo."); auth.signOut(); }
+                        myAlert("✅ Cuenta creada. Revisa tu correo para verificarla.", 'success');
+                        setIsLogin(true);
                     }
-                } catch (err) { setError(err.message); }
+                } catch (error) {
+                    myAlert("Error: " + error.message, 'error');
+                }
             };
 
             return (
-                <div className="min-h-screen bg-orange-50 flex items-center justify-center p-6">
-                    <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-orange-100">
-                        <div className="text-center mb-6">
-                            <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-600">
-                                <Icon name={isRegistering ? "user-plus" : "log-in"} className="text-orange-600" size={32} />
-                            </div>
-                            <h2 className="text-2xl font-bold text-gray-800">{isRegistering ? "Crear Cuenta" : "Iniciar Sesión"}</h2>
+                <div className="flex items-center justify-center min-h-screen bg-slate-100 p-4">
+                    <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md animate-[bounce-in_0.5s_ease-out]">
+                        <div className="flex justify-center mb-6">
+                            <div className="bg-orange-100 p-4 rounded-full text-orange-600"><Icon name="log-in" size={40} /></div>
                         </div>
-                        {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm border border-red-100">{error}</div>}
-                        {message && <div className="bg-green-50 text-green-700 p-3 rounded mb-4 text-sm border border-green-100">{message}</div>}
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <input type="email" required className="w-full border p-3 rounded-xl" placeholder="Correo" value={email} onChange={e=>setEmail(e.target.value)} />
-                            <input type="password" required className="w-full border p-3 rounded-xl" placeholder="Contraseña" value={password} onChange={e=>setPassword(e.target.value)} />
-                            <button className="w-full bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-orange-700 transition">{isRegistering?"Registrarse":"Entrar"}</button>
+                        <h2 className="text-2xl font-bold text-center text-slate-800 mb-2">{isLogin ? 'Bienvenido' : 'Crear Cuenta'}</h2>
+                        <p className="text-center text-slate-400 text-sm mb-6">Gestiona tus documentos fácilmente</p>
+                        
+                        <form onSubmit={handleAuth} className="space-y-4">
+                            <div className="relative"><Icon name="users" className="absolute left-3 top-3.5 text-slate-400" size={18} /><input type="email" placeholder="Correo electrónico" className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-200 transition" value={email} onChange={e => setEmail(e.target.value)} required /></div>
+                            <div className="relative"><Icon name="lock" className="absolute left-3 top-3.5 text-slate-400" size={18} /><input type="password" placeholder="Contraseña" className="w-full pl-10 p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-200 transition" value={password} onChange={e => setPassword(e.target.value)} required /></div>
+                            <button type="submit" className="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-slate-300 hover:scale-[1.02] transition-transform">{isLogin ? 'Iniciar Sesión' : 'Registrarse'}</button>
                         </form>
-                        <div className="mt-6 text-center"><button onClick={()=>{setIsRegistering(!isRegistering);setError('');setMessage('')}} className="text-orange-600 font-bold text-sm hover:underline">{isRegistering?"Ya tengo cuenta":"Crear cuenta nueva"}</button></div>
+                        <button onClick={() => setIsLogin(!isLogin)} className="w-full mt-4 text-xs font-bold text-slate-500 hover:text-orange-600 transition">
+                            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia Sesión'}
+                        </button>
                     </div>
                 </div>
             );
         };
 
-                                                                                                                                                                const AdminPanel = ({ onNavigate }) => {
+                                                                                                                                                                                const AdminPanel = ({ onNavigate }) => {
             const [view, setView] = useState('users'); 
             const [users, setUsers] = useState([]);
             const [requests, setRequests] = useState([]); 
@@ -217,16 +257,13 @@
             const [adminStats, setAdminStats] = useState([]); 
             const [allSales, setAllSales] = useState([]); 
             
-            // Estados para Servicios
             const [editingId, setEditingId] = useState(null); 
             const [showServiceForm, setShowServiceForm] = useState(false);
             const [roleMenuId, setRoleMenuId] = useState(null);
 
-            // Estados para Configuración de Roles (NUEVO)
             const [showRoleConfig, setShowRoleConfig] = useState(false);
             const [roleCosts, setRoleCosts] = useState({ vip: '', reseller: '', leader: '' });
 
-            // Estados para Estadísticas
             const [showStatForm, setShowStatForm] = useState(false);
             const [newStatData, setNewStatData] = useState({ title: '', linkedServiceName: '' });
 
@@ -237,7 +274,6 @@
             });
 
             const ROLES = ['Cliente', 'Cliente Vip', 'Revendedor', 'Líder'];
-            const MASTER_ADMIN = "mrandroidtutorialeshd@gmail.com";
 
             useEffect(() => { loadData(); }, [view]);
 
@@ -263,14 +299,11 @@
                     let items = snap.docs.map(doc => ({id: doc.id, isActive: true, ...doc.data()}));
                     items.sort((a, b) => (a.order || 0) - (b.order || 0));
                     setServices(items);
-                    
-                    // Cargar configuración de precios de roles
                     const configSnap = await db.collection('app_config').doc('role_prices').get();
                     if (configSnap.exists) setRoleCosts(configSnap.data());
                 }
             };
 
-            // --- LÓGICA DE ROLES (NUEVO) ---
             const handleSaveRoleCosts = async () => {
                 try {
                     await db.collection('app_config').doc('role_prices').set({
@@ -278,21 +311,36 @@
                         reseller: parseFloat(roleCosts.reseller) || 0,
                         leader: parseFloat(roleCosts.leader) || 0
                     });
-                    alert("✅ Costos de jerarquía actualizados correctamente.");
+                    myAlert("✅ Costos de jerarquía actualizados.");
                     setShowRoleConfig(false);
-                } catch (e) { alert("Error al guardar configuración: " + e.message); }
+                } catch (e) { myAlert("Error: " + e.message, 'error'); }
             };
 
-            const handleDirectRecharge = async (u) => { const amount = prompt(`Monto a CARGAR (Sumar) a ${u.email}:`); const val = parseFloat(amount); if(!isNaN(val) && val > 0) { try { await db.collection('users').doc(u.id).update({ balance: firebase.firestore.FieldValue.increment(val) }); alert(`✅ Se cargaron $${val} a ${u.email}`); loadData(); } catch(e) { alert("Error"); } } };
-            const handleEditBalance = async (u) => { const newBal = prompt(`⚠️ ESTABLECER saldo exacto para ${u.email}:`, u.balance); if(newBal !== null) { await db.collection('users').doc(u.id).update({balance: parseFloat(newBal)}); loadData(); } };
-            const handleSelectRole = async (userId, newRole) => { try { await db.collection('users').doc(userId).update({ membership: newRole }); setRoleMenuId(null); loadData(); } catch (e) { alert("Error"); } };
-            const handleToggleSuspend = async (u) => { if(confirm(u.suspended ? "¿Reactivar?" : "¿SUSPENDER?")) { await db.collection('users').doc(u.id).update({ suspended: !u.suspended }); loadData(); } };
-            const handleDeleteUser = async (id) => { if(confirm("⛔ ¿ELIMINAR USUARIO?")) { await db.collection('users').doc(id).delete(); loadData(); } };
+            const handleDirectRecharge = async (u) => { 
+                const amount = await myPrompt(`Monto a CARGAR (Sumar) a ${u.email}:`, '', 'number');
+                const val = parseFloat(amount); 
+                if(!isNaN(val) && val > 0) { 
+                    try { 
+                        await db.collection('users').doc(u.id).update({ balance: firebase.firestore.FieldValue.increment(val) }); 
+                        myAlert(`✅ Se cargaron $${val} a ${u.email}`); 
+                        loadData(); 
+                    } catch(e) { myAlert("Error", 'error'); } 
+                } 
+            };
+            const handleEditBalance = async (u) => { 
+                const newBal = await myPrompt(`⚠️ ESTABLECER saldo exacto para ${u.email}:`, u.balance, 'number');
+                if(newBal !== null && newBal !== undefined) { 
+                    await db.collection('users').doc(u.id).update({balance: parseFloat(newBal)}); 
+                    loadData(); 
+                } 
+            };
+            const handleSelectRole = async (userId, newRole) => { try { await db.collection('users').doc(userId).update({ membership: newRole }); setRoleMenuId(null); loadData(); } catch (e) { myAlert("Error", 'error'); } };
+            const handleToggleSuspend = async (u) => { if(await myConfirm(u.suspended ? "¿Reactivar?" : "¿SUSPENDER?")) { await db.collection('users').doc(u.id).update({ suspended: !u.suspended }); loadData(); } };
+            const handleDeleteUser = async (id) => { if(await myConfirm("⛔ ¿ELIMINAR USUARIO?")) { await db.collection('users').doc(id).delete(); loadData(); } };
             
-            // BORRAR HISTORIAL COMPLETO
             const handleDeleteHistory = async (u) => {
-                if(auth.currentUser.email !== "mrandroidtutorialeshd@gmail.com") return alert("⛔ ACCESO DENEGADO");
-                if (!confirm(`⚠️ ¿ESTÁS SEGURO?\n\nSe eliminará TODO de ${u.email}:\n- Historial de Recargas\n- Compras de Servicios\n- TODOS los PDF Generados\n\nEsta acción no se puede deshacer.`)) return;
+                if(auth.currentUser.email !== "mrandroidtutorialeshd@gmail.com") return myAlert("⛔ ACCESO DENEGADO", 'error');
+                if (!await myConfirm(`⚠️ ¿ESTÁS SEGURO?\n\nSe eliminará TODO de ${u.email}.`)) return;
                 try {
                     const collections = ['recharge_requests', 'purchased_services', 'service_requests', 'recetas_imss', 'notas_remision', 'ine_history', 'actas_nacimiento', 'curp_history', 'incapacidades_history', 'cfe_history', 'cert_secundaria_history'];
                     let totalDeleted = 0;
@@ -304,13 +352,13 @@
                             await batch.commit();
                         }
                     }
-                    if (totalDeleted > 0) alert(`✅ Limpieza Exitosa.\nSe eliminaron ${totalDeleted} documentos y registros.`); else alert("El usuario no tenía registros para borrar.");
+                    if (totalDeleted > 0) myAlert(`✅ Limpieza Exitosa.\nSe eliminaron ${totalDeleted} registros.`); else myAlert("El usuario no tenía registros.", 'info');
                     loadData();
-                } catch (e) { console.error(e); alert("Error al eliminar: " + e.message); }
+                } catch (e) { console.error(e); myAlert("Error: " + e.message, 'error'); }
             };
 
             const handleAttachLink = async (req) => {
-                const link = prompt("📂 Pegue aquí el link de descarga:");
+                const link = await myPrompt("📂 Pegue aquí el documento/archivo (Link):");
                 if(!link) return;
                 try {
                     const batch = db.batch();
@@ -320,12 +368,12 @@
                         const histRef = db.collection('purchased_services').doc(req.historyId);
                         batch.update(histRef, { downloadUrl: link });
                     }
-                    await batch.commit(); loadData(); alert("✅ Documento adjuntado.");
-                } catch(e) { alert("Error al adjuntar: " + e.message); }
+                    await batch.commit(); loadData(); myAlert("✅ Documento adjuntado.");
+                } catch(e) { myAlert("Error: " + e.message, 'error'); }
             };
 
             const handleCompleteServiceRequest = async (req) => {
-                if(confirm("¿Marcar solicitud como COMPLETADA y notificar en historial?")) {
+                if(await myConfirm("¿Marcar solicitud como COMPLETADA?")) {
                     try {
                         const batch = db.batch();
                         if (req.historyId) {
@@ -334,13 +382,13 @@
                         }
                         const reqRef = db.collection('service_requests').doc(req.id);
                         batch.delete(reqRef);
-                        await batch.commit(); loadData(); alert("✅ Solicitud finalizada.");
-                    } catch(e) { alert("Error: " + e.message); }
+                        await batch.commit(); loadData(); myAlert("✅ Solicitud finalizada.");
+                    } catch(e) { myAlert("Error: " + e.message, 'error'); }
                 }
             };
 
-            const handleSaveStat = async (e) => { e.preventDefault(); if(!newStatData.title || !newStatData.linkedServiceName) return alert("Llena todos los campos"); try { await db.collection('admin_stats_config').add({ title: newStatData.title, linkedServiceName: newStatData.linkedServiceName, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); setNewStatData({ title: '', linkedServiceName: '' }); setShowStatForm(false); loadData(); } catch(e) { alert("Error"); } };
-            const handleDeleteStat = async (id) => { if(confirm("¿Eliminar?")) { await db.collection('admin_stats_config').doc(id).delete(); loadData(); } };
+            const handleSaveStat = async (e) => { e.preventDefault(); if(!newStatData.title || !newStatData.linkedServiceName) return myAlert("Llena todos los campos", 'warning'); try { await db.collection('admin_stats_config').add({ title: newStatData.title, linkedServiceName: newStatData.linkedServiceName, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); setNewStatData({ title: '', linkedServiceName: '' }); setShowStatForm(false); loadData(); } catch(e) { myAlert("Error", 'error'); } };
+            const handleDeleteStat = async (id) => { if(await myConfirm("¿Eliminar?")) { await db.collection('admin_stats_config').doc(id).delete(); loadData(); } };
             const getServiceCount = (serviceName) => allSales.filter(sale => sale.serviceName === serviceName).length;
 
             const handleToggleStatus = async (service) => { try { await db.collection('custom_services').doc(service.id).update({ isActive: !service.isActive }); loadData(); } catch (e) { console.error(e); } };
@@ -349,7 +397,7 @@
             const handleSaveService = async (e) => {
                 e.preventDefault();
                 const { name, description, deliveryTime, icon, colorId, priceClient, priceVip, priceReseller, priceLeader, order, category } = formData;
-                if(!name || !description) return alert("Faltan datos básicos");
+                if(!name || !description) return myAlert("Faltan datos básicos", 'warning');
                 try {
                     const targetCategory = category || 'clones';
                     const categoryServices = services.filter(s => (s.category || 'clones') === targetCategory);
@@ -361,8 +409,8 @@
                     };
                     if(editingId) { const { isActive, ...updateData } = payload; await db.collection('custom_services').doc(editingId).update({...updateData, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}); } 
                     else { await db.collection('custom_services').add({...payload, createdAt: firebase.firestore.FieldValue.serverTimestamp()}); }
-                    alert("Servicio guardado"); resetForm(); loadData();
-                } catch(e) { alert("Error al guardar"); }
+                    myAlert("Servicio guardado"); resetForm(); loadData();
+                } catch(e) { myAlert("Error al guardar", 'error'); }
             };
 
             const handleEditServiceClick = (s) => { 
@@ -370,8 +418,8 @@
                 setFormData({ name: s.name, description: s.description, deliveryTime: s.deliveryTime||'', icon: s.icon||'briefcase', colorId: s.colorId||'orange', priceClient: s.priceClient || s.price || '', priceVip: s.priceVip || s.price || '', priceReseller: s.priceReseller || s.price || '', priceLeader: s.priceLeader || s.price || '', order: s.order || '', category: s.category || 'clones' }); 
                 setTimeout(() => { document.getElementById('service-form-container')?.scrollIntoView({ behavior: 'smooth' }); }, 100); 
             };
-            const handleDeleteService = async (id) => { if(confirm("¿Borrar servicio?")) { await db.collection('custom_services').doc(id).delete(); loadData(); } };
-            const processPayment = async (req, approved) => { try { const batch = db.batch(); batch.update(db.collection('recharge_requests').doc(req.id), { status: approved ? 'approved' : 'rejected' }); if(approved) batch.update(db.collection('users').doc(req.userId), { balance: firebase.firestore.FieldValue.increment(req.amount) }); await batch.commit(); alert(approved?"Aprobado":"Rechazado"); loadData(); } catch(e){alert("Error");} };
+            const handleDeleteService = async (id) => { if(await myConfirm("¿Borrar servicio?")) { await db.collection('custom_services').doc(id).delete(); loadData(); } };
+            const processPayment = async (req, approved) => { try { const batch = db.batch(); batch.update(db.collection('recharge_requests').doc(req.id), { status: approved ? 'approved' : 'rejected' }); if(approved) batch.update(db.collection('users').doc(req.userId), { balance: firebase.firestore.FieldValue.increment(req.amount) }); await batch.commit(); myAlert(approved?"Aprobado":"Rechazado"); loadData(); } catch(e){myAlert("Error", 'error');} };
 
             const ServiceList = ({ title, items, colorClass, iconName }) => (
                 <div className="mb-8"><h3 className={`text-xs font-bold ${colorClass} uppercase tracking-wider mb-3 ml-2 flex items-center gap-2`}><Icon name={iconName} size={14} /> {title}</h3>{items.length === 0 && <p className="text-xs text-slate-400 ml-2 italic">No hay servicios aquí.</p>}{items.map((s) => { const colorTheme = COLOR_OPTIONS.find(c => c.id === s.colorId) || COLOR_OPTIONS[0]; const isActive = s.isActive !== false; return ( <div key={s.id} className={`bg-white p-3 rounded-2xl mb-3 flex justify-between items-center shadow-sm border border-slate-100 transition hover:shadow-md ${editingId === s.id ? 'ring-2 ring-blue-400' : ''} ${!isActive ? 'opacity-70 grayscale-[0.8]' : ''}`}><div className="flex items-center gap-3 overflow-hidden flex-1"><div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 text-slate-500 text-xs font-bold border border-slate-100">#{s.order}</div><div className={`${colorTheme.bg} p-2.5 rounded-xl ${colorTheme.text} flex-shrink-0`}><Icon name={s.icon || 'briefcase'} size={18} /></div><div className="min-w-0"><h4 className="text-sm font-bold text-slate-800 truncate">{s.name}</h4><div className="flex items-center gap-2 mt-0.5">{s.priceClient && <span className="text-[10px] font-bold bg-green-50 text-green-700 px-1.5 py-0.5 rounded border border-green-100">Base: ${s.priceClient}</span>}</div></div></div><div className="flex items-center gap-2 ml-2"><div className="flex flex-col items-center gap-1 border-r border-slate-100 pr-3 mr-1"><button onClick={() => handleToggleStatus(s)} className={`w-8 h-4 rounded-full p-0.5 flex items-center transition-colors ${isActive ? 'bg-green-500 justify-end' : 'bg-slate-200 justify-start'}`}><div className="w-3 h-3 bg-white rounded-full shadow-sm"></div></button></div><button onClick={()=>handleEditServiceClick(s)} className="p-2 text-blue-400 hover:bg-blue-50 rounded-xl transition"><Icon name="edit-2" size={16} /></button><button onClick={()=>handleDeleteService(s.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-xl transition"><Icon name="trash" size={16} /></button></div></div> ); })}</div>
@@ -414,8 +462,8 @@
                                         <div className="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs font-bold border border-green-200">${req.cost}</div>
                                     </div>
                                     <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3"><p className="text-[10px] text-slate-400 font-bold uppercase mb-1">DATOS DEL DOCUMENTO:</p><p className="text-xs font-mono font-bold text-slate-800 tracking-wide break-words">{req.targetCurp}</p></div>
-                                    {req.downloadUrl && <div className="bg-blue-50 text-blue-700 text-xs p-2 rounded-lg mb-3 border border-blue-200 flex items-center gap-2"><Icon name="briefcase" size={14} /> Link adjuntado</div>}
-                                    <div className="space-y-2"><button onClick={() => handleAttachLink(req)} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-blue-700 transition active:scale-95 shadow-sm shadow-blue-200"><Icon name="briefcase" size={16} /> {req.downloadUrl ? 'Editar Link Documento' : 'Adjuntar Documento (Link)'}</button><button onClick={() => handleCompleteServiceRequest(req)} className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-slate-800 transition active:scale-95 shadow-md"><Icon name="check-square" size={16} /> Marcar como Completado</button></div>
+                                    {req.downloadUrl && <div className="bg-blue-50 text-blue-700 text-xs p-2 rounded-lg mb-3 border border-blue-200 flex items-center gap-2"><Icon name="briefcase" size={14} /> Documento adjuntado</div>}
+                                    <div className="space-y-2"><button onClick={() => handleAttachLink(req)} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-blue-700 transition active:scale-95 shadow-sm shadow-blue-200"><Icon name="briefcase" size={16} /> {req.downloadUrl ? 'Editar Documento' : 'Adjuntar Documento'}</button><button onClick={() => handleCompleteServiceRequest(req)} className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-slate-800 transition active:scale-95 shadow-md"><Icon name="check-square" size={16} /> Marcar como Completado</button></div>
                                 </div>
                             ))
                         )}
@@ -474,20 +522,16 @@
         };
 
 
-                                                                                                                const WelcomeScreen = ({ onNavigate, onLogout, user }) => {
+                                                                                                                        const WelcomeScreen = ({ onNavigate, onLogout, user }) => {
             const [balance, setBalance] = useState(0);
             const [membership, setMembership] = useState('Cliente');
             const [showRechargeModal, setShowRechargeModal] = useState(false); 
             const [showPaymentModal, setShowPaymentModal] = useState(false); 
-            
-            // NUEVO: Modal de Jerarquías
             const [showHierarchyModal, setShowHierarchyModal] = useState(false);
             const [roleCosts, setRoleCosts] = useState({ vip: 0, reseller: 0, leader: 0 });
             const [servicesList, setServicesList] = useState([]);
-
             const [currentTransaction, setCurrentTransaction] = useState({ amount: 0, ref: '' });
             const [isMenuOpen, setIsMenuOpen] = useState(false); 
-            
             const isAdmin = user.email === "mrandroidtutorialeshd@gmail.com";
 
             useEffect(() => { 
@@ -498,185 +542,58 @@
                         setMembership(data.membership || 'Cliente');
                     }
                 });
-                // Cargar precios de roles y servicios para la tabla comparativa
                 db.collection('app_config').doc('role_prices').get().then(doc => { if(doc.exists) setRoleCosts(doc.data()); });
-                db.collection('custom_services').get().then(snap => {
-                    setServicesList(snap.docs.map(d => ({id:d.id, ...d.data()})));
-                });
-
+                db.collection('custom_services').get().then(snap => { setServicesList(snap.docs.map(d => ({id:d.id, ...d.data()}))); });
                 return () => unsub();
             }, [user]);
 
             const handleInitiateRecharge = (amount) => {
                 const val = parseFloat(amount);
-                if(isNaN(val) || val < 200) { alert("Carga mínima $200"); return; }
+                if(isNaN(val) || val < 200) { myAlert("⚠️ Carga mínima $200", 'warning'); return; }
                 const randomRef = 'RW' + Math.floor(Math.random() * 900 + 100);
                 setCurrentTransaction({ amount: val, ref: randomRef });
                 setShowRechargeModal(false); 
                 setShowPaymentModal(true);   
             };
 
-            const handleConfirmPayment = async () => {
+                        const handleConfirmPayment = async () => {
+                // 1. PRIMERO cerramos la ventana modal inmediatamente
+                setShowPaymentModal(false);
+
                 try {
+                    // 2. Guardamos la solicitud en la base de datos
                     await db.collection('recharge_requests').add({
                         userId: user.uid, email: user.email, amount: currentTransaction.amount,
                         reference: currentTransaction.ref, status: 'pending', 
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    alert("Solicitud enviada correctamente."); setShowPaymentModal(false);
-                } catch (e) { alert("Error al solicitar recarga"); }
+                    
+                    // 3. FINALMENTE mostramos la notificación (con el modal ya cerrado)
+                    await myAlert("✅ Solicitud enviada correctamente.", 'success');
+                } catch (e) { 
+                    myAlert("Error al solicitar recarga", 'error'); 
+                }
             };
 
-            // LÓGICA DE COMPRA DE JERARQUÍA
             const handlePurchaseRole = async (roleName, cost) => {
-                if (balance < cost) return alert(`⚠️ Saldo insuficiente.\nNecesitas $${cost} para ser ${roleName}. Recarga tu cuenta.`);
-                if (!confirm(`¿Confirmar compra de membresía ${roleName} por $${cost}?`)) return;
+                if (balance < cost) return myAlert(`⚠️ Saldo insuficiente.\nNecesitas $${cost} para ser ${roleName}.`, 'warning');
+                if (!await myConfirm(`¿Confirmar compra de membresía ${roleName} por $${cost}?`)) return;
 
                 try {
                     const batch = db.batch();
-                    batch.update(db.collection('users').doc(user.uid), { 
-                        balance: firebase.firestore.FieldValue.increment(-cost),
-                        membership: roleName
-                    });
-                    // Guardar en historial de compras
+                    batch.update(db.collection('users').doc(user.uid), { balance: firebase.firestore.FieldValue.increment(-cost), membership: roleName });
                     const histRef = db.collection('purchased_services').doc();
-                    batch.set(histRef, {
-                        userId: user.uid,
-                        serviceName: `Membresía ${roleName}`,
-                        cost: cost,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        status: 'paid'
-                    });
+                    batch.set(histRef, { userId: user.uid, serviceName: `Membresía ${roleName}`, cost: cost, timestamp: firebase.firestore.FieldValue.serverTimestamp(), status: 'paid' });
                     await batch.commit();
-                    alert(`✅ ¡Felicidades! Ahora eres ${roleName}. Tus precios se han actualizado.`);
+                    myAlert(`✅ ¡Felicidades! Ahora eres ${roleName}.`, 'success');
                     setShowHierarchyModal(false);
-                } catch (e) { alert("Error: " + e.message); }
+                } catch (e) { myAlert("Error: " + e.message, 'error'); }
             };
 
-            // MODAL DE TABLA DE JERARQUÍAS
-            const HierarchyModal = () => {
-                if (!showHierarchyModal) return null;
-                return (
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
-                        <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onClick={() => setShowHierarchyModal(false)}></div>
-                        <div className="bg-white w-full max-w-4xl h-[90vh] rounded-[30px] p-6 relative z-10 shadow-2xl animate-bounce-in flex flex-col overflow-hidden">
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Icon name="bar-chart" className="text-orange-600" /> Precios por Jerarquía</h2>
-                                <button onClick={() => setShowHierarchyModal(false)} className="bg-slate-100 p-2 rounded-full text-slate-500 hover:bg-slate-200"><Icon name="x" size={20} /></button>
-                            </div>
-                            
-                            <div className="overflow-auto flex-1 border border-slate-200 rounded-xl">
-                                <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-50 text-slate-700 font-bold sticky top-0 z-10 shadow-sm">
-                                        <tr>
-                                            <th className="p-3 border-b">Servicio</th>
-                                            <th className="p-3 border-b text-center min-w-[120px]">
-                                                <div className="text-xs text-slate-400 uppercase">Gratis</div>
-                                                <div>Cliente</div>
-                                            </th>
-                                            <th className="p-3 border-b text-center min-w-[120px] bg-indigo-50 text-indigo-700">
-                                                <div className="text-xs uppercase opacity-70">Costo: ${roleCosts.vip || 0}</div>
-                                                <div>VIP</div>
-                                                {membership !== 'Cliente Vip' && membership !== 'Revendedor' && membership !== 'Líder' && (
-                                                    <button onClick={()=>handlePurchaseRole('Cliente Vip', roleCosts.vip)} className="mt-1 bg-indigo-600 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-indigo-700">Adquirir</button>
-                                                )}
-                                            </th>
-                                            <th className="p-3 border-b text-center min-w-[120px] bg-purple-50 text-purple-700">
-                                                <div className="text-xs uppercase opacity-70">Costo: ${roleCosts.reseller || 0}</div>
-                                                <div>Revendedor</div>
-                                                {membership !== 'Revendedor' && membership !== 'Líder' && (
-                                                    <button onClick={()=>handlePurchaseRole('Revendedor', roleCosts.reseller)} className="mt-1 bg-purple-600 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-purple-700">Adquirir</button>
-                                                )}
-                                            </th>
-                                            <th className="p-3 border-b text-center min-w-[120px] bg-yellow-50 text-yellow-700">
-                                                <div className="text-xs uppercase opacity-70">Costo: ${roleCosts.leader || 0}</div>
-                                                <div>Líder</div>
-                                                {membership !== 'Líder' && (
-                                                    <button onClick={()=>handlePurchaseRole('Líder', roleCosts.leader)} className="mt-1 bg-yellow-500 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-yellow-600">Adquirir</button>
-                                                )}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100">
-                                        {servicesList.map(s => (
-                                            <tr key={s.id} className="hover:bg-slate-50">
-                                                <td className="p-3 font-medium text-slate-700">{s.name}</td>
-                                                <td className="p-3 text-center text-slate-500">${s.priceClient || s.price || 0}</td>
-                                                <td className="p-3 text-center font-bold text-indigo-600 bg-indigo-50/30">${s.priceVip || s.price || 0}</td>
-                                                <td className="p-3 text-center font-bold text-purple-600 bg-purple-50/30">${s.priceReseller || s.price || 0}</td>
-                                                <td className="p-3 text-center font-bold text-yellow-600 bg-yellow-50/30">${s.priceLeader || s.price || 0}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="mt-4 text-xs text-slate-400 text-center bg-slate-50 p-2 rounded-lg">
-                                * Al adquirir una jerarquía, tus precios se actualizarán automáticamente en la sección de Servicios.
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
-            const RechargeModal = ({ isOpen, onClose, onSubmit }) => {
-                const [amount, setAmount] = useState('');
-                if (!isOpen) return null;
-                return (
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
-                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-                        <div className="bg-white w-full max-w-[340px] rounded-[35px] p-6 relative z-10 shadow-2xl animate-bounce-in">
-                            <button onClick={onClose} className="absolute top-4 right-4 bg-gray-100 p-2 rounded-full text-gray-400 hover:bg-gray-200 transition"><Icon name="arrow-left" size={16} /></button>
-                            <div className="flex justify-center mb-4 mt-2"><div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(59,130,246,0.15)]"><Icon name="briefcase" className="text-blue-500" size={32} /></div></div>
-                            <h2 className="text-xl font-extrabold text-center text-slate-800 mb-6 font-['Inter']">Cargar Saldo</h2>
-                            <div className="bg-gray-100 rounded-2xl p-1 mb-5 shadow-inner border border-gray-100 relative"><div className="absolute left-0 top-0 h-full w-full flex items-center justify-center pointer-events-none opacity-20">{amount === '' && <span className="text-2xl font-bold">$0</span>}</div><input type="number" className="w-full bg-transparent text-center text-2xl font-bold text-slate-700 p-3 outline-none z-10 relative placeholder-transparent" placeholder="0" value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus /></div>
-                            <button onClick={() => onSubmit(amount)} className="w-full bg-[#007bff] text-white py-3.5 rounded-2xl font-bold text-sm shadow-[0_4px_14px_rgba(0,123,255,0.3)] hover:bg-blue-600 transition active:scale-95">Solicitar</button>
-                            <div className="bg-[#fff9e6] border border-[#ffeeba] rounded-2xl p-4 mt-5"><div className="flex items-center gap-2 text-[#997404] font-bold text-[11px] mb-1.5 uppercase tracking-wide"><Icon name="shield" size={12} /> NOTA IMPORTANTE</div><p className="text-[#856404] text-[10px] leading-relaxed font-medium">La recarga mínima es de <b className="text-[#6d5203]">$200 pesos</b> y el saldo no expira solo reduce en compras.</p></div>
-                        </div>
-                    </div>
-                );
-            };
-
-            const PaymentModal = ({ isOpen, onClose, onConfirm, data }) => {
-                const [timeLeft, setTimeLeft] = useState(600);
-                useEffect(() => { if (!isOpen) return; const timer = setInterval(() => { setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0)); }, 1000); return () => clearInterval(timer); }, [isOpen]);
-                const formatTime = (seconds) => { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${m}:${s < 10 ? '0' : ''}${s}`; };
-                const copyToClipboard = (text) => { navigator.clipboard.writeText(text).then(() => { alert(`Copiado: ${text}`); }).catch(err => { const textArea = document.createElement("textarea"); textArea.value = text; document.body.appendChild(textArea); textArea.select(); document.execCommand("copy"); document.body.removeChild(textArea); alert(`Copiado: ${text}`); }); };
-                if (!isOpen) return null;
-                const CLABE = "646180402324335362"; const BENEFICIARIO = "AXLL";
-                return (
-                    <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4">
-                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
-                        <div className="bg-white w-full max-w-[360px] rounded-[30px] p-5 relative z-10 shadow-2xl animate-bounce-in">
-                            <div className="flex justify-between items-center mb-5"><h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">Completar Pago</h2><div className="flex items-center gap-2"><div className="bg-red-50 text-red-500 font-mono font-bold text-lg px-3 py-1 rounded-lg border border-red-100 shadow-sm">{formatTime(timeLeft)}</div><button onClick={onClose} className="bg-gray-100 p-1.5 rounded-full text-gray-400 hover:bg-gray-200"><Icon name="x" size={18} /></button></div></div>
-                            <div className="bg-[#f1f5f9] rounded-2xl p-4 border border-slate-200 mb-4 shadow-inner relative overflow-hidden">
-                                <div className="absolute -right-6 -top-6 w-20 h-20 bg-blue-100 rounded-full opacity-50 blur-xl"></div>
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between items-center"><span className="text-slate-500">Banco:</span><span className="font-bold text-slate-800">STP / Transferencia</span></div>
-                                    <div className="flex justify-between items-center"><span className="text-slate-500">Cuenta CLABE:</span><div className="flex items-center gap-2"><span className="font-bold text-slate-800 tracking-tight text-[13px]">{CLABE}</span><button onClick={()=>copyToClipboard(CLABE)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div>
-                                    <div className="flex justify-between items-center"><span className="text-slate-500">Beneficiario:</span><div className="flex items-center gap-2"><span className="font-bold text-slate-800">{BENEFICIARIO}</span><button onClick={()=>copyToClipboard(BENEFICIARIO)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div>
-                                    <div className="flex justify-between items-center"><span className="text-slate-500">Monto exacto:</span><span className="font-extrabold text-green-600 text-base">${data.amount}</span></div>
-                                    <div className="flex justify-between items-center pt-1"><span className="text-slate-500">Concepto/Ref:</span><div className="flex items-center gap-2"><span className="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-xs font-bold font-mono border border-slate-300">{data.ref}</span><button onClick={()=>copyToClipboard(data.ref)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div>
-                                </div>
-                            </div>
-                            <div className="space-y-3"><button onClick={onConfirm} className="w-full bg-[#0f172a] text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 transition transform active:scale-[0.98]">Ya realicé el pago</button><button onClick={onClose} className="w-full bg-red-50 text-red-500 py-2.5 rounded-xl font-bold text-xs hover:bg-red-100 transition">Cancelar Solicitud</button></div>
-                        </div>
-                    </div>
-                );
-            };
-
-            const SideMenu = () => (
-                <div className="fixed inset-0 z-[9999] flex justify-end">
-                    <div className="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)}></div>
-                    <div className="relative bg-white w-[280px] h-full shadow-2xl flex flex-col animate-[slide_0.3s_ease-out]">
-                        <div className="bg-orange-600 p-6 pt-10 pb-6 text-white"><h2 className="text-xl font-bold">Menú</h2><p className="text-orange-100 text-xs mt-1 opacity-80">{user.email}</p><button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4 p-2 bg-orange-700/50 rounded-full text-white hover:bg-orange-700"><Icon name="chevron-right" size={20} /></button></div>
-                        <div className="flex-1 p-4 space-y-2 overflow-y-auto">
-                            {isAdmin && <button onClick={() => { setIsMenuOpen(false); onNavigate('admin'); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-orange-50 text-orange-700 font-bold text-sm hover:bg-orange-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="shield" size={20} /></div>Panel Admin</button>}
-                            <button onClick={() => { setIsMenuOpen(false); onNavigate('generated_pdfs'); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-slate-700 font-bold text-sm hover:bg-slate-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="receipt" size={20} /></div>PDF Generados</button>
-                        </div>
-                        <div className="p-4 border-t border-gray-100"><button onClick={onLogout} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="log-out" size={20} /></div>Cerrar Sesión</button></div>
-                    </div>
-                </div>
-            );
+            const HierarchyModal = () => { if (!showHierarchyModal) return null; return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4"><div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onClick={() => setShowHierarchyModal(false)}></div><div className="bg-white w-full max-w-4xl h-[90vh] rounded-[30px] p-6 relative z-10 shadow-2xl animate-bounce-in flex flex-col overflow-hidden"><div className="flex justify-between items-center mb-4"><h2 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Icon name="bar-chart" className="text-orange-600" /> Precios por Jerarquía</h2><button onClick={() => setShowHierarchyModal(false)} className="bg-slate-100 p-2 rounded-full text-slate-500 hover:bg-slate-200"><Icon name="x" size={20} /></button></div><div className="overflow-auto flex-1 border border-slate-200 rounded-xl"><table className="w-full text-sm text-left"><thead className="bg-slate-50 text-slate-700 font-bold sticky top-0 z-10 shadow-sm"><tr><th className="p-3 border-b">Servicio</th><th className="p-3 border-b text-center min-w-[120px]"><div className="text-xs text-slate-400 uppercase">Gratis</div><div>Cliente</div></th><th className="p-3 border-b text-center min-w-[120px] bg-indigo-50 text-indigo-700"><div className="text-xs uppercase opacity-70">Costo: ${roleCosts.vip || 0}</div><div>VIP</div>{membership !== 'Cliente Vip' && membership !== 'Revendedor' && membership !== 'Líder' && (<button onClick={()=>handlePurchaseRole('Cliente Vip', roleCosts.vip)} className="mt-1 bg-indigo-600 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-indigo-700">Adquirir</button>)}</th><th className="p-3 border-b text-center min-w-[120px] bg-purple-50 text-purple-700"><div className="text-xs uppercase opacity-70">Costo: ${roleCosts.reseller || 0}</div><div>Revendedor</div>{membership !== 'Revendedor' && membership !== 'Líder' && (<button onClick={()=>handlePurchaseRole('Revendedor', roleCosts.reseller)} className="mt-1 bg-purple-600 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-purple-700">Adquirir</button>)}</th><th className="p-3 border-b text-center min-w-[120px] bg-yellow-50 text-yellow-700"><div className="text-xs uppercase opacity-70">Costo: ${roleCosts.leader || 0}</div><div>Líder</div>{membership !== 'Líder' && (<button onClick={()=>handlePurchaseRole('Líder', roleCosts.leader)} className="mt-1 bg-yellow-500 text-white text-[10px] px-2 py-1 rounded w-full hover:bg-yellow-600">Adquirir</button>)}</th></tr></thead><tbody className="divide-y divide-slate-100">{servicesList.map(s => (<tr key={s.id} className="hover:bg-slate-50"><td className="p-3 font-medium text-slate-700">{s.name}</td><td className="p-3 text-center text-slate-500">${s.priceClient || s.price || 0}</td><td className="p-3 text-center font-bold text-indigo-600 bg-indigo-50/30">${s.priceVip || s.price || 0}</td><td className="p-3 text-center font-bold text-purple-600 bg-purple-50/30">${s.priceReseller || s.price || 0}</td><td className="p-3 text-center font-bold text-yellow-600 bg-yellow-50/30">${s.priceLeader || s.price || 0}</td></tr>))}</tbody></table></div></div></div> ); };
+            const RechargeModal = ({ isOpen, onClose, onSubmit }) => { const [amount, setAmount] = useState(''); if (!isOpen) return null; return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4"><div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={onClose}></div><div className="bg-white w-full max-w-[340px] rounded-[35px] p-6 relative z-10 shadow-2xl animate-bounce-in"><button onClick={onClose} className="absolute top-4 right-4 bg-gray-100 p-2 rounded-full text-gray-400 hover:bg-gray-200 transition"><Icon name="arrow-left" size={16} /></button><div className="flex justify-center mb-4 mt-2"><div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center shadow-[0_4px_20px_rgba(59,130,246,0.15)]"><Icon name="briefcase" className="text-blue-500" size={32} /></div></div><h2 className="text-xl font-extrabold text-center text-slate-800 mb-6 font-['Inter']">Cargar Saldo</h2><div className="bg-gray-100 rounded-2xl p-1 mb-5 shadow-inner border border-gray-100 relative"><div className="absolute left-0 top-0 h-full w-full flex items-center justify-center pointer-events-none opacity-20">{amount === '' && <span className="text-2xl font-bold">$0</span>}</div><input type="number" className="w-full bg-transparent text-center text-2xl font-bold text-slate-700 p-3 outline-none z-10 relative placeholder-transparent" placeholder="0" value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus /></div><button onClick={() => onSubmit(amount)} className="w-full bg-[#007bff] text-white py-3.5 rounded-2xl font-bold text-sm shadow-[0_4px_14px_rgba(0,123,255,0.3)] hover:bg-blue-600 transition active:scale-95">Solicitar</button><div className="bg-[#fff9e6] border border-[#ffeeba] rounded-2xl p-4 mt-5"><div className="flex items-center gap-2 text-[#997404] font-bold text-[11px] mb-1.5 uppercase tracking-wide"><Icon name="shield" size={12} /> NOTA IMPORTANTE</div><p className="text-[#856404] text-[10px] leading-relaxed font-medium">La recarga mínima es de <b className="text-[#6d5203]">$200 pesos</b> y el saldo no expira solo reduce en compras.</p></div></div></div> ); };
+            const PaymentModal = ({ isOpen, onClose, onConfirm, data }) => { const [timeLeft, setTimeLeft] = useState(600); useEffect(() => { if (!isOpen) return; const timer = setInterval(() => { setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0)); }, 1000); return () => clearInterval(timer); }, [isOpen]); const formatTime = (seconds) => { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${m}:${s < 10 ? '0' : ''}${s}`; }; const copyToClipboard = (text) => { navigator.clipboard.writeText(text).then(() => { myAlert(`Copiado: ${text}`, 'success'); }).catch(err => { const textArea = document.createElement("textarea"); textArea.value = text; document.body.appendChild(textArea); textArea.select(); document.execCommand("copy"); document.body.removeChild(textArea); myAlert(`Copiado: ${text}`, 'success'); }); }; if (!isOpen) return null; const CLABE = "646180402324335362"; const BENEFICIARIO = "AXLL"; return ( <div className="fixed inset-0 z-[9999] flex items-center justify-center px-4"><div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div><div className="bg-white w-full max-w-[360px] rounded-[30px] p-5 relative z-10 shadow-2xl animate-bounce-in"><div className="flex justify-between items-center mb-5"><h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">Completar Pago</h2><div className="flex items-center gap-2"><div className="bg-red-50 text-red-500 font-mono font-bold text-lg px-3 py-1 rounded-lg border border-red-100 shadow-sm">{formatTime(timeLeft)}</div><button onClick={onClose} className="bg-gray-100 p-1.5 rounded-full text-gray-400 hover:bg-gray-200"><Icon name="x" size={18} /></button></div></div><div className="bg-[#f1f5f9] rounded-2xl p-4 border border-slate-200 mb-4 shadow-inner relative overflow-hidden"><div className="absolute -right-6 -top-6 w-20 h-20 bg-blue-100 rounded-full opacity-50 blur-xl"></div><div className="space-y-3 text-sm"><div className="flex justify-between items-center"><span className="text-slate-500">Banco:</span><span className="font-bold text-slate-800">STP / Transferencia</span></div><div className="flex justify-between items-center"><span className="text-slate-500">Cuenta CLABE:</span><div className="flex items-center gap-2"><span className="font-bold text-slate-800 tracking-tight text-[13px]">{CLABE}</span><button onClick={()=>copyToClipboard(CLABE)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div><div className="flex justify-between items-center"><span className="text-slate-500">Beneficiario:</span><div className="flex items-center gap-2"><span className="font-bold text-slate-800">{BENEFICIARIO}</span><button onClick={()=>copyToClipboard(BENEFICIARIO)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div><div className="flex justify-between items-center"><span className="text-slate-500">Monto exacto:</span><span className="font-extrabold text-green-600 text-base">${data.amount}</span></div><div className="flex justify-between items-center pt-1"><span className="text-slate-500">Concepto/Ref:</span><div className="flex items-center gap-2"><span className="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-xs font-bold font-mono border border-slate-300">{data.ref}</span><button onClick={()=>copyToClipboard(data.ref)} className="text-slate-400 hover:text-blue-500 bg-white p-1 rounded-md shadow-sm border border-slate-100"><Icon name="copy" size={14} /></button></div></div></div></div><div className="space-y-3"><button onClick={onConfirm} className="w-full bg-[#0f172a] text-white py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 transition transform active:scale-[0.98]">Ya realicé el pago</button><button onClick={onClose} className="w-full bg-red-50 text-red-500 py-2.5 rounded-xl font-bold text-xs hover:bg-red-100 transition">Cancelar Solicitud</button></div></div></div> ); };
+            const SideMenu = () => ( <div className="fixed inset-0 z-[9999] flex justify-end"><div className="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" onClick={() => setIsMenuOpen(false)}></div><div className="relative bg-white w-[280px] h-full shadow-2xl flex flex-col animate-[slide_0.3s_ease-out]"><div className="bg-[#0f172a] p-6 pt-10 pb-6 text-white"><h2 className="text-xl font-bold">Menú</h2><p className="text-slate-300 text-xs mt-1 opacity-80">{user.email}</p><button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4 p-2 bg-slate-700 rounded-full text-white hover:bg-slate-600"><Icon name="chevron-right" size={20} /></button></div><div className="flex-1 p-4 space-y-2 overflow-y-auto">{isAdmin && <button onClick={() => { setIsMenuOpen(false); onNavigate('admin'); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-orange-50 text-orange-700 font-bold text-sm hover:bg-orange-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="shield" size={20} /></div>Panel Admin</button>}<button onClick={() => { setIsMenuOpen(false); onNavigate('generated_pdfs'); }} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-slate-700 font-bold text-sm hover:bg-slate-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="receipt" size={20} /></div>PDF Generados</button></div><div className="p-4 border-t border-gray-100"><button onClick={onLogout} className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition"><div className="bg-white p-2 rounded-full shadow-sm"><Icon name="log-out" size={20} /></div>Cerrar Sesión</button></div></div></div> );
 
             return (
                 <div className="min-h-screen bg-orange-50 font-sans pb-8">
@@ -685,22 +602,16 @@
                     <HierarchyModal />
                     {isMenuOpen && <SideMenu />}
 
-                    <div className="bg-orange-600 px-6 pt-10 pb-12 text-white flex justify-between items-center rounded-b-[40px] shadow-md relative z-0">
-                        <div><h1 className="text-2xl font-bold tracking-tight">Cocina Express</h1><p className="text-orange-100 opacity-90 text-sm font-medium">{isAdmin?"MODO ADMIN":`Hola, ${user.email.split('@')[0]}`}</p></div>
-                        <button onClick={() => setIsMenuOpen(true)} className="p-3 bg-orange-700/50 rounded-full backdrop-blur-sm hover:bg-orange-700 transition"><Icon name="utensils" size={24} className="text-white"/></button>
-                    </div>
+                    <div className="bg-[#0f172a] px-6 pt-10 pb-12 text-white flex justify-between items-center rounded-b-[40px] shadow-md relative z-0">
+    <div><h1 className="text-2xl font-bold tracking-tight">Cocina Express</h1><p className="text-slate-300 opacity-90 text-sm font-medium">{isAdmin?"MODO ADMIN":`Hola, ${user.email.split('@')[0]}`}</p></div>
+    <button onClick={() => setIsMenuOpen(true)} className="p-3 bg-slate-800 rounded-full backdrop-blur-sm hover:bg-slate-700 transition"><Icon name="utensils" size={24} className="text-white"/></button>
+</div>
                     
                     <div className="px-6 -mt-8 mb-6 relative z-10">
                         <div className="flex gap-3 items-stretch">
                             <div className="bg-[#1e293b] p-4 rounded-3xl flex-1 shadow-lg text-white"><p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tu Saldo</p><h2 className="text-2xl font-bold text-[#4ade80]">${balance.toLocaleString()}</h2></div>
-                            {/* TARJETA JERARQUÍA CLICKEABLE */}
-                            <div onClick={() => setShowHierarchyModal(true)} className="bg-white p-4 rounded-3xl flex-1 shadow-lg border border-gray-100 cursor-pointer hover:bg-slate-50 transition active:scale-95 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-2 opacity-10"><Icon name="bar-chart" size={40}/></div>
-                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Jerarquía</p>
-                                <h2 className="text-lg font-bold text-gray-900 truncate">{membership}</h2>
-                                <p className="text-[9px] text-blue-500 font-bold mt-1">Ver precios →</p>
-                            </div>
-                            <button onClick={() => setShowRechargeModal(true)} className="bg-orange-500 w-[64px] rounded-3xl shadow-lg shadow-orange-200 flex items-center justify-center hover:bg-orange-600 transition-colors active:scale-95"><Icon name="plus" size={32} className="text-white" /></button>
+                            <div onClick={() => setShowHierarchyModal(true)} className="bg-white p-4 rounded-3xl flex-1 shadow-lg border border-gray-100 cursor-pointer hover:bg-slate-50 transition active:scale-95 relative overflow-hidden"><div className="absolute top-0 right-0 p-2 opacity-10"><Icon name="bar-chart" size={40}/></div><p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Jerarquía</p><h2 className="text-lg font-bold text-gray-900 truncate">{membership}</h2><p className="text-[9px] text-blue-500 font-bold mt-1">Ver precios →</p></div>
+                            <button onClick={() => setShowRechargeModal(true)} className="bg-[#0f172a] w-[64px] rounded-3xl shadow-lg shadow-slate-300 flex items-center justify-center hover:bg-slate-800 transition-colors active:scale-95"><Icon name="plus" size={32} className="text-white" /></button>
                         </div>
                     </div>
 
@@ -713,237 +624,257 @@
             );
         };
 
-                                                                                                                                const ServicesMenu = ({ onNavigate, user }) => {
-            const [customServices, setCustomServices] = useState([]);
-            const [selectedService, setSelectedService] = useState(null); 
-            const [userProfile, setUserProfile] = useState(null);
-            
-            const [formValues, setFormValues] = useState({});
-            const [view, setView] = useState('clones');
+                                                                                                                                        // ==========================================
+        // MENÚ DE SERVICIOS (CON ALERTAS ELEGANTES)
+        // ==========================================
+        const ServicesMenu = ({ onNavigate, user }) => {
+            const [services, setServices] = useState([]);
+            const [userBalance, setUserBalance] = useState(0);
+            const [userRole, setUserRole] = useState('Cliente');
+            const [activeCategory, setActiveCategory] = useState('clones');
 
             useEffect(() => {
-                if(user) {
-                    const unsub = db.collection('users').doc(user.uid).onSnapshot(doc => {
-                        setUserProfile(doc.data());
-                    });
-                    return () => unsub();
-                }
+                // Escuchar saldo y rol del usuario
+                const unsubUser = db.collection('users').doc(user.uid).onSnapshot(doc => {
+                    if (doc.exists) {
+                        setUserBalance(doc.data().balance || 0);
+                        setUserRole(doc.data().membership || 'Cliente');
+                    }
+                });
+
+                // Cargar servicios activos
+                const unsubServices = db.collection('custom_services').where('isActive', '==', true).onSnapshot(snap => {
+                    const items = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    items.sort((a, b) => (a.order || 0) - (b.order || 0));
+                    setServices(items);
+                });
+
+                return () => { unsubUser(); unsubServices(); };
             }, [user]);
 
-            useEffect(() => {
-                const unsub = db.collection('custom_services').onSnapshot(snap => {
-                    let docs = snap.docs.map(doc => ({id: doc.id, isActive: true, category: 'clones', ...doc.data()})); 
-                    docs = docs.filter(s => s.isActive !== false);
-                    docs.sort((a, b) => (a.order || 999) - (b.order || 999));
-                    setCustomServices(docs);
-                });
-                return () => unsub();
-            }, []);
-
-            const getServiceFields = (serviceName) => {
-                const name = serviceName.toUpperCase();
-                if (name.includes("ANTECEDENTES NO PENALES")) {
-                    return [
-                        { key: 'curp', label: 'CURP', placeholder: 'CURP' },
-                        { key: 'nombres', label: 'Nombres', placeholder: 'Nombres' },
-                        { key: 'paterno', label: 'Apellido Paterno', placeholder: 'Apellido Paterno' },
-                        { key: 'materno', label: 'Apellido Materno', placeholder: 'Apellido Materno' },
-                        { key: 'fechaNac', label: 'Fecha Nac.', placeholder: 'DD/MM/AAAA' },
-                        { key: 'domicilio', label: 'Domicilio', placeholder: 'Domicilio Completo' },
-                        { key: 'claveElector', label: 'Clave Elector', placeholder: 'Clave de Elector' }
-                    ];
-                }
-                if (name.includes("CERTIFICADO COVID")) {
-                    return [
-                        { key: 'curp', label: 'CURP', placeholder: 'CURP' },
-                        { key: 'nombre', label: 'Nombre Completo', placeholder: 'Nombre Completo' }
-                    ];
-                }
-                const singleCurpServices = [
-                    "NACIMIENTO", "DIVORCIO", "DEFUNCIÓN", "DEFUNCION", "MATRIMONIO",
-                    "CURP ACTUALIZADA", "LOCALIZA NSS", "AFORÉ", "AFORE", "SEMANAS COTIZADAS"
-                ];
-                if (singleCurpServices.some(k => name.includes(k))) {
-                    return [{ key: 'curp', label: 'Datos del Documento', placeholder: 'Escriba CURP' }];
-                }
-                return null;
+            // Calcular precio según jerarquía
+            const getRolePrice = (service) => {
+                let price = parseFloat(service.priceClient) || 0;
+                if (userRole === 'Cliente Vip') price = parseFloat(service.priceVip) || price;
+                if (userRole === 'Revendedor') price = parseFloat(service.priceReseller) || price;
+                if (userRole === 'Líder') price = parseFloat(service.priceLeader) || price;
+                return price;
             };
 
-            const getPrice = (service) => {
-                const role = userProfile?.membership || 'Cliente';
-                if (role === 'Líder' && service.priceLeader) return service.priceLeader;
-                if (role === 'Revendedor' && service.priceReseller) return service.priceReseller;
-                if (role === 'Cliente Vip' && service.priceVip) return service.priceVip;
-                return service.priceClient || service.price || '0';
-            };
+                        const handleServiceClick = async (service) => {
+                const finalPrice = getRolePrice(service);
+                const nameLower = service.name.toLowerCase();
 
-            const handleInputChange = (key, value) => {
-                setFormValues(prev => ({ ...prev, [key]: value.toUpperCase() }));
-            };
-
-            const handleCloseModal = () => { setSelectedService(null); setFormValues({}); };
-
-            const activeFields = selectedService && selectedService.category === 'authentics' ? getServiceFields(selectedService.name) : null;
-
-            const handlePlaceOrder = async () => {
-                if (!selectedService || !userProfile) return;
-
-                if (activeFields) {
-                    for (let field of activeFields) {
-                        if (!formValues[field.key] || !formValues[field.key].trim()) {
-                            alert(`⚠️ Falta completar: ${field.label}`);
-                            return;
-                        }
-                    }
+                // 1. Validar Saldo primero que nada
+                if (userBalance < finalPrice) {
+                    return myAlert(`⚠️ Saldo insuficiente.\n\nTu saldo: $${userBalance}\nCosto servicio: $${finalPrice}\n\nPor favor recarga tu cuenta.`, 'error');
                 }
 
-                const price = parseFloat(getPrice(selectedService));
-                const currentBalance = parseFloat(userProfile.balance || 0);
+                // 2. Determinar si el servicio tiene un EDITOR (Clones, Recetas, Incapacidades)
+                // Esto nos sirve para filtrar las excepciones que mencionaste.
+                let targetScreen = '';
 
-                if (currentBalance < price) {
-                    alert(`⚠️ Saldo insuficiente.\n\nCosto: $${price}\nTu saldo: $${currentBalance}\n\nPor favor recarga tu cuenta.`);
-                    return;
+                // Excepciones: Recetas e Incapacidades siempre van al editor (flujo antiguo)
+                if (nameLower.includes('receta')) targetScreen = 'editor';
+                else if (nameLower.includes('incapacidad')) targetScreen = 'incapacity_editor';
+                
+                // Si no es Auténtico, buscamos su editor correspondiente
+                else if (service.category !== 'authentics') {
+                    if (nameLower.includes('nota')) targetScreen = 'note_editor';
+                    else if (nameLower.includes('ine')) targetScreen = 'ine_editor';
+                    else if (nameLower.includes('acta')) targetScreen = 'acta_editor';
+                    else if (nameLower.includes('curp')) targetScreen = 'curp_editor';
+                    else if (nameLower.includes('luz') || nameLower.includes('cfe')) targetScreen = 'cfe_editor';
+                    else if (nameLower.includes('secundaria')) targetScreen = 'secundaria_editor';
                 }
 
-                if (!confirm(`¿Confirmar pago de $${price} por ${selectedService.name}?`)) return;
+                // ======================================================
+                // LÓGICA DIVIDIDA SEGÚN TU SOLICITUD
+                // ======================================================
 
-                try {
-                    const batch = db.batch();
-                    const userRef = db.collection('users').doc(user.uid);
+                // CASO A: TRÁMITES REALES (Sin editor y no son excepciones)
+                // AQUÍ APLICAMOS EL NUEVO FLUJO: 1. Datos -> 2. Confirmar Pago
+                if (!targetScreen) {
                     
-                    batch.update(userRef, { balance: firebase.firestore.FieldValue.increment(-price) });
+                    // PASO 1: MODAL DATOS (Foto 1)
+                    // Pedimos los datos ANTES de confirmar la compra
+                    const dataInput = await myPrompt("📝 Ingresa los datos para el trámite:", "Ej. Nombre completo, CURP, etc.");
+                    
+                    // Si el usuario da a "Cancelar" en el prompt, detenemos todo.
+                    if (dataInput === null) return; 
 
-                    if (activeFields) {
-                        let dataString = "";
-                        activeFields.forEach(f => { dataString += `${f.label}: ${formValues[f.key]} | `; });
-                        dataString = dataString.slice(0, -3);
+                    // PASO 2: MODAL CONFIRMACIÓN DE COMPRA (Foto 2)
+                    // Solo si ingresó datos (o dejó vacío pero dio Aceptar), mostramos el cobro
+                    const confirmed = await myConfirm(`¿Confirmar compra? Servicio: ${service.name} Costo: $${finalPrice}`);
+                    
+                    if (!confirmed) return; // Si cancela la compra, no hacemos nada.
 
-                        // 1. Preparamos referencias para vincularlas
-                        const historyRef = db.collection('purchased_services').doc();
-                        const requestRef = db.collection('service_requests').doc();
+                    // PASO 3: PROCESAR LA TRANSACCIÓN
+                    try {
+                        // 1. Descontar saldo
+                        await db.collection('users').doc(user.uid).update({
+                            balance: firebase.firestore.FieldValue.increment(-finalPrice)
+                        });
 
-                        // 2. Guardar Solicitud con ID del historial (VINCULACIÓN)
-                        batch.set(requestRef, {
+                                                // 2. Registrar en historial de compras
+                        const purchaseRef = await db.collection('purchased_services').add({
                             userId: user.uid,
                             userEmail: user.email,
-                            serviceName: selectedService.name,
-                            cost: price,
-                            targetCurp: dataString, 
-                            historyId: historyRef.id, // <--- AQUÍ GUARDAMOS EL ID DEL HISTORIAL
-                            status: 'pending',
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            serviceId: service.id,
+                            // CAMBIO: Agregamos "(En Proceso)" al nombre inicial en el historial
+                            serviceName: service.name + " (En Proceso)", 
+                            cost: finalPrice,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'pending_data'
                         });
+
+                        // 3. Guardar la solicitud CON LOS DATOS QUE YA PEDIMOS (dataInput)
+                        await db.collection('service_requests').add({
+                            historyId: purchaseRef.id,
+                            userId: user.uid,
+                            userEmail: user.email,
+                            serviceName: service.name,
+                            cost: finalPrice,
+                            targetCurp: dataInput, // <--- Aquí guardamos lo del primer modal
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'pending'
+                        });
+
+                        await myAlert("✅ Solicitud enviada.\nTu trámite está en proceso. Revisa el historial.", 'success');
                         
-                        // 3. Guardar Historial (Estado inicial: En Proceso)
-                        batch.set(historyRef, {
-                            userId: user.uid,
-                            serviceName: selectedService.name + " (En Proceso)",
-                            cost: price,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            status: 'paid'
-                        });
+                        // CAMBIO: Ordenamos que el historial abra en la pestaña de servicios
+                        window.tempHistoryView = 'services'; 
+                        
+                        onNavigate('history');
 
-                        await batch.commit();
-                        alert(`✅ Solicitud Enviada.\n\nServicio: ${selectedService.name}\nDatos recibidos.\n\nEl documento se procesará en breve.`);
-                        handleCloseModal();
-
-                    } else {
-                        const historyRef = db.collection('purchased_services').doc();
-                        batch.set(historyRef, {
-                            userId: user.uid,
-                            serviceName: selectedService.name,
-                            cost: price,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            status: 'paid'
-                        });
-
-                        await batch.commit();
-
-                        if (selectedService.name === 'Recetas IMSS') onNavigate('editor');
-                        else if (selectedService.name === 'Notas de Remisión') onNavigate('note_editor');
-                        else if (selectedService.name === 'Actas de Nacimiento') onNavigate('acta_editor');
-                        else if (selectedService.name === 'Curp') onNavigate('curp_editor');
-                        else if (selectedService.name === 'Incapacidad IMSS') onNavigate('incapacity_editor');
-                        else if (selectedService.name === 'Comprobante CFE') onNavigate('cfe_editor');
-                        else if (selectedService.name === 'Certificado Secundaria') onNavigate('secundaria_editor');
-                        else if (selectedService.name === 'INE') onNavigate('ine_editor');
-                        else { alert("✅ Compra exitosa. Servicio activado."); handleCloseModal(); }
+                    } catch (error) {
+                        console.error(error);
+                        myAlert("Ocurrió un error al procesar la compra.", 'error');
                     }
+                } 
+                
+                // CASO B: CLONES Y EXCEPCIONES (Recetas/Incapacidad)
+                // Mantenemos el flujo original: 1. Confirmar Pago -> 2. Abrir Editor
+                else {
+                    const confirmed = await myConfirm(`¿Confirmar compra?\n\nServicio: ${service.name}\nCosto: $${finalPrice}`);
+                    if (!confirmed) return;
 
-                } catch (e) {
-                    console.error("Error:", e);
-                    alert("❌ Error al procesar la compra.");
+                                        try {
+                        // Descontar saldo
+                        await db.collection('users').doc(user.uid).update({
+                            balance: firebase.firestore.FieldValue.increment(-finalPrice)
+                        });
+
+                        // CAMBIO: Guardamos la referencia en una variable para usarla después
+                        const purchaseRef = await db.collection('purchased_services').add({
+                            userId: user.uid,
+                            userEmail: user.email,
+                            serviceId: service.id,
+                            serviceName: service.name + " (En Edición)", // Nombre temporal
+                            cost: finalPrice,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'creating'
+                        });
+
+                        // CAMBIO: Guardamos ID y Nombre en memoria global para el editor
+                        window.currentHistoryId = purchaseRef.id;
+                        window.currentServiceName = service.name;
+
+                        await myAlert("✅ Compra exitosa.\nRedirigiendo al editor...", 'success');
+                        onNavigate(targetScreen);
+
+                    } catch (error) {
+                        console.error(error);
+                        myAlert("Ocurrió un error al procesar la compra.", 'error');
+                    }
                 }
             };
 
-            const getColorTheme = (colorId) => COLOR_OPTIONS.find(c => c.id === colorId) || COLOR_OPTIONS[0];
-            const filteredServices = customServices.filter(s => (s.category || 'clones') === view);
+            const clones = services.filter(s => (s.category || 'clones') === 'clones');
+            const authentics = services.filter(s => s.category === 'authentics');
 
             return (
-                <div className="min-h-screen bg-orange-50 font-sans pb-8">
-                    {selectedService && (
-                        <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-[slide_0.3s_ease-out]">
-                            <button onClick={handleCloseModal} className="absolute top-6 left-6 p-3 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition z-10"><Icon name="arrow-left" size={24} /></button>
-                            <div className="flex-1 flex flex-col items-center justify-start pt-20 px-8 text-center space-y-6 overflow-y-auto pb-32">
-                                <div className={`w-28 h-28 rounded-[30px] flex items-center justify-center ${getColorTheme(selectedService.colorId).bg} ${getColorTheme(selectedService.colorId).text} shadow-2xl mb-2 transform scale-100`}><Icon name={selectedService.icon || 'briefcase'} size={56} /></div>
-                                <div><h2 className="text-2xl font-black text-slate-900 mb-2 leading-tight tracking-tight">{selectedService.name}</h2><p className="text-sm text-slate-500 font-medium px-4 leading-relaxed">{selectedService.description}</p></div>
-                                <div className="flex gap-4 w-full max-w-sm justify-center">
-                                    <div className="flex-1 bg-red-50 p-3 rounded-2xl flex flex-col items-center border border-red-100"><span className="text-[9px] text-red-400 font-bold uppercase tracking-widest mb-1">PRECIO</span><span className="text-2xl font-black text-red-500">${getPrice(selectedService)}</span></div>
-                                    {selectedService.deliveryTime && <div className="flex-1 bg-blue-50 p-3 rounded-2xl flex flex-col items-center border border-blue-100"><span className="text-[9px] text-blue-400 font-bold uppercase tracking-widest mb-1">ENTREGA</span><span className="text-2xl font-black text-blue-500">{selectedService.deliveryTime}</span></div>}
-                                </div>
-                                {activeFields && (
-                                    <div className="w-full max-w-sm mt-4 animate-[slide_0.2s_ease-out] bg-slate-50 p-4 rounded-3xl border border-slate-200">
-                                        <h3 className="text-xs font-bold text-slate-400 uppercase mb-4 text-left pl-1">Datos Requeridos</h3>
-                                        <div className="space-y-3">
-                                            {activeFields.map((field) => (
-                                                <div key={field.key} className="text-left">
-                                                    <label className="text-[10px] font-bold text-slate-500 uppercase ml-2 mb-1 block">{field.label}</label>
-                                                    <input type="text" value={formValues[field.key] || ''} onChange={(e) => handleInputChange(field.key, e.target.value)} placeholder={field.placeholder} className="w-full bg-white border border-slate-200 p-3 rounded-xl text-sm font-bold text-slate-800 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all placeholder:text-slate-300" />
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <p className="text-[10px] text-orange-500 mt-4 font-bold text-center bg-orange-50 p-2 rounded-lg border border-orange-100">⚠️ Verifica que tus datos sean correctos.</p>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="fixed bottom-0 left-0 w-full p-6 pb-8 bg-white/90 backdrop-blur-md border-t border-slate-100 z-20">
-                                <button onClick={handlePlaceOrder} className="w-full bg-[#ffb3b3] text-[#7f1d1d] py-4 rounded-[25px] font-bold text-lg shadow-xl shadow-red-100 flex items-center justify-center gap-3 hover:bg-[#ff9999] transition transform active:scale-[0.98]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>{activeFields ? "Solicitar Trámite" : "Realizar Orden"}
+                <div className="min-h-screen bg-slate-50 pb-20 font-sans">
+                    {/* Encabezado */}
+                    <div className="bg-slate-900 p-6 pt-10 pb-8 text-white rounded-b-[40px] shadow-lg sticky top-0 z-20">
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => onNavigate('welcome')} className="bg-slate-800 p-2 rounded-full hover:bg-slate-700 transition">
+                                    <Icon name="arrow-left" size={20} className="text-white" />
                                 </button>
+                                <div>
+                                    <h1 className="text-xl font-bold">Servicios</h1>
+                                    <p className="text-slate-400 text-xs font-medium">Elige una opción</p>
+                                </div>
+                            </div>
+                            <div className="bg-slate-800 px-4 py-2 rounded-2xl border border-slate-700">
+                                <p className="text-[10px] text-slate-400 uppercase font-bold text-right">Tu Saldo</p>
+                                <p className="text-lg font-bold text-green-400">${userBalance.toLocaleString()}</p>
                             </div>
                         </div>
-                    )}
-                    <div className="bg-orange-600 p-6 pt-12 pb-20 text-white rounded-b-[40px] shadow-lg relative z-0">
-                        <button onClick={()=>onNavigate('welcome')} className="absolute top-6 left-6 p-2 bg-orange-700/50 rounded-full hover:bg-orange-800 transition"><Icon name="arrow-left" className="text-white" size={20} /></button>
-                        <div className="mt-4"><h1 className="text-3xl font-bold">Servicios</h1><p className="text-orange-100 opacity-90 text-sm">Seleccione documento</p></div>
-                    </div>
-                    <div className="px-6 -mt-10 relative z-10 mb-6">
-                        <div className="bg-white p-1.5 rounded-2xl shadow-lg flex border border-orange-100">
-                            <button onClick={() => setView('authentics')} className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${view === 'authentics' ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-200' : 'text-slate-400 hover:bg-slate-50'}`}>Auténticos</button>
-                            <button onClick={() => setView('clones')} className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${view === 'clones' ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-200' : 'text-slate-400 hover:bg-slate-50'}`}>Clones</button>
+
+                        {/* Selector de Categoría */}
+                        <div className="flex bg-slate-800/50 p-1 rounded-2xl backdrop-blur-sm">
+                            <button onClick={() => setActiveCategory('clones')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${activeCategory === 'clones' ? 'bg-white text-slate-900 shadow-md' : 'text-slate-400 hover:text-white'}`}>
+                                <Icon name="edit-3" size={14} /> Clones Editables
+                            </button>
+                            <button onClick={() => setActiveCategory('authentics')} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${activeCategory === 'authentics' ? 'bg-orange-500 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}>
+                                <Icon name="shield" size={14} /> Trámites Reales
+                            </button>
                         </div>
                     </div>
-                    <div className="px-6 space-y-4 relative z-0 pb-10">
-                        {filteredServices.length === 0 && <div className="text-center py-10 opacity-50"><Icon name="box" size={48} className="mx-auto mb-2 text-gray-300" /><p className="text-gray-400 font-medium">No hay servicios en esta sección.</p></div>}
-                        {filteredServices.map(service => {
-                            const colorTheme = COLOR_OPTIONS.find(c => c.id === service.colorId) || COLOR_OPTIONS[0];
-                            const currentPrice = getPrice(service);
+
+                    {/* Lista de Servicios */}
+                    <div className="px-6 mt-2 relative z-10 space-y-4">
+                        {(activeCategory === 'clones' ? clones : authentics).length === 0 && (
+                            <div className="bg-white p-8 rounded-3xl shadow-sm text-center border border-slate-100 opacity-60">
+                                <Icon name="box" size={40} className="mx-auto mb-2 text-slate-300" />
+                                <p className="text-sm font-bold text-slate-400">No hay servicios disponibles en esta categoría.</p>
+                            </div>
+                        )}
+
+                        {(activeCategory === 'clones' ? clones : authentics).map((service) => {
+                            const price = getRolePrice(service);
+                            const colorTheme = COLOR_OPTIONS.find(c => c.id === service.colorId) || COLOR_OPTIONS[0]; // COLOR_OPTIONS debe estar definido arriba globalmente o en App
+                            
                             return (
-                                <div key={service.id} onClick={() => setSelectedService(service)} className="bg-white p-5 rounded-2xl shadow-sm flex items-center gap-4 border border-orange-100 transition-transform cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
-                                    <div className={`${colorTheme.bg} p-3 rounded-xl ${colorTheme.text} self-start`}><Icon name={service.icon || 'briefcase'} size={24} /></div>
-                                    <div className="flex-1"><div className="flex justify-between items-start"><h3 className="text-lg font-bold leading-tight mb-1">{service.name}</h3><div className="text-gray-300"><Icon name="chevron-right" size={20} /></div></div><p className="text-xs text-gray-500 mb-2 line-clamp-1">{service.description}</p><div className="flex flex-wrap gap-2">{service.deliveryTime && <span className="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded border border-green-200 flex items-center gap-1"><Icon name="history" size={10} /> {service.deliveryTime}</span>}<span className="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded border border-red-200 flex items-center gap-1"><Icon name="dollar-sign" size={10} /> ${currentPrice}</span></div></div>
+                                <div key={service.id} onClick={() => handleServiceClick(service)} className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 relative overflow-hidden group cursor-pointer hover:shadow-lg transition-all active:scale-[0.98]">
+                                    <div className="flex items-center gap-4 relative z-10">
+                                        <div className={`w-12 h-12 rounded-2xl ${colorTheme.bg} ${colorTheme.text} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                                            <Icon name={service.icon || 'briefcase'} size={24} />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="text-sm font-bold text-slate-800 truncate">{service.name}</h3>
+                                            <p className="text-[10px] text-slate-400 line-clamp-1">{service.description}</p>
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">${price}</span>
+                                                <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
+                                                    <Icon name="history" size={10} /> {service.deliveryTime || 'Inmediato'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-slate-900 group-hover:text-white transition-colors`}>
+                                            <Icon name="chevron-right" size={16} />
+                                        </div>
+                                    </div>
                                 </div>
                             );
                         })}
-                        <div className="h-4"></div>
                     </div>
                 </div>
             );
         };
         
 
-                                                const HistoryScreen = ({ onNavigate, user }) => {
-            const [view, setView] = useState('recharges');
+                                                        const HistoryScreen = ({ onNavigate, user }) => {
+            // CAMBIO: Inicia en 'services' si viene de una compra, si no, inicia en 'recharges'
+            const [view, setView] = useState(window.tempHistoryView || 'recharges');
+
+            // CAMBIO: Efecto para limpiar la variable temporal al salir
+            useEffect(() => {
+                return () => { window.tempHistoryView = null; };
+            }, []);
+
             const [recharges, setRecharges] = useState([]);
             const [services, setServices] = useState([]);
             const [loading, setLoading] = useState(true);
@@ -981,9 +912,9 @@
 
             return (
                 <div className="min-h-screen bg-slate-50 font-sans pb-8">
-                    <div className="bg-orange-600 p-6 pt-12 pb-20 text-white rounded-b-[40px] shadow-lg relative z-0">
-                        <button onClick={()=>onNavigate('welcome')} className="absolute top-6 left-6 p-2 bg-orange-700/50 rounded-full hover:bg-orange-800 transition"><Icon name="arrow-left" className="text-white" size={20} /></button>
-                        <div className="mt-4 text-center"><h1 className="text-3xl font-bold">Historial</h1><p className="text-orange-100 opacity-90 text-sm">Movimientos de tu cuenta</p></div>
+                    <div className="bg-[#0f172a] p-6 pt-12 pb-20 text-white rounded-b-[40px] shadow-lg relative z-0">
+                        <button onClick={()=>onNavigate('welcome')} className="absolute top-6 left-6 p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition"><Icon name="arrow-left" className="text-white" size={20} /></button>
+                        <div className="mt-4 text-center"><h1 className="text-3xl font-bold">Historial</h1><p className="text-slate-300 opacity-90 text-sm">Movimientos de tu cuenta</p></div>
                     </div>
                     <div className="px-6 -mt-10 relative z-10 mb-6">
                         <div className="bg-white p-1.5 rounded-2xl shadow-lg flex border border-orange-100">
@@ -1016,13 +947,25 @@
                                                 <div className="p-3 rounded-xl bg-blue-50 text-blue-600 flex-shrink-0"><Icon name="file-heart" size={20} /></div>
                                                 <div className="min-w-0"><h4 className="text-sm font-bold text-slate-800 truncate">{item.serviceName}</h4><p className="text-xs text-slate-400">{formatDate(item.timestamp)}</p></div>
                                             </div>
-                                            <div className="text-right flex-shrink-0 pl-2"><div className="text-sm font-extrabold text-slate-700 mb-1">-${item.cost}</div><span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold border border-slate-200">Pagado</span></div>
+                                            <div className="text-right flex-shrink-0 pl-2"><div className="text-sm font-extrabold text-slate-700 mb-1">-${item.cost}</div><span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold border border-slate-200">{item.status === 'completed' ? 'Finalizado' : 'Pagado'}</span></div>
                                         </div>
-                                        {/* BOTÓN DE DESCARGA PARA EL USUARIO */}
+                                        
+                                        {/* 1. BOTÓN PARA TRÁMITES REALES (TIENEN LINK EXTERNO) */}
                                         {item.downloadUrl && (
                                             <a href={item.downloadUrl} target="_blank" className="w-full bg-green-500 text-white py-2 rounded-xl text-center text-xs font-bold hover:bg-green-600 transition shadow-sm shadow-green-200 flex items-center justify-center gap-2">
                                                 <Icon name="box" size={14} /> Descargar Documento
                                             </a>
+                                        )}
+
+                                        {/* 2. NUEVO BOTÓN PARA DOCUMENTOS EDITABLES (RECETAS, CLONES, ETC.) */}
+                                        {/* Si está 'completed' y NO tiene 'downloadUrl', es un PDF generado internamente */}
+                                        {item.status === 'completed' && !item.downloadUrl && (
+                                            <button 
+                                                onClick={() => onNavigate('generated_pdfs')} 
+                                                className="w-full bg-green-500 text-white py-2 rounded-xl text-center text-xs font-bold hover:bg-green-600 transition shadow-sm shadow-green-200 flex items-center justify-center gap-2"
+                                            >
+                                                <Icon name="receipt" size={14} /> Descargar PDF
+                                            </button>
                                         )}
                                     </div>
                                 ))}
@@ -1051,7 +994,16 @@
                         const handleSave = async () => { 
                 try { 
                     await db.collection('recetas_imss').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ Guardado"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Guardado"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); } 
             };
@@ -1113,7 +1065,16 @@
                         userId: user.uid,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                    alert("✅ Nota guardada en historial");
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Nota guardada en historial");
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error al guardar"); }
             };
@@ -1276,7 +1237,16 @@
                         const handleSave = async () => {
                 try { 
                     await db.collection('actas_nacimiento').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ Guardado"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Guardado"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); }
             };
@@ -1327,7 +1297,16 @@
                         const handleSave = async () => {
                 try { 
                     await db.collection('curp_history').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ CURP Guardada"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ CURP Guardada"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); }
             };
@@ -1414,7 +1393,16 @@
                         const handleSave = async () => { 
                 try { 
                     await db.collection('incapacidades_history').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ Incapacidad Guardada"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Incapacidad Guardada"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); } 
             };
@@ -1578,7 +1566,16 @@
                         const handleSave = async () => { 
                 try { 
                     await db.collection('cfe_history').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ Recibo Guardado"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Recibo Guardado"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); } 
             };
@@ -1729,7 +1726,16 @@
                         const handleSave = async () => { 
                 try { 
                     await db.collection('cert_secundaria_history').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ Certificado Guardado"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ Certificado Guardado"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); } 
             };
@@ -1860,7 +1866,16 @@
                         const handleSave = async () => { 
                 try { 
                     await db.collection('ine_history').add({ ...data, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); 
-                    alert("✅ INE Guardada"); 
+                    
+                                        if(window.currentHistoryId && window.currentServiceName) {
+                        await db.collection('purchased_services').doc(window.currentHistoryId).update({
+                            serviceName: window.currentServiceName + " (Finalizado)",
+                            status: 'completed'
+                        });
+                        window.currentHistoryId = null;
+                    }
+
+                    await myAlert("✅ INE Guardada"); 
                     onNavigate('welcome'); // <--- TE ENVÍA AL INICIO
                 } catch (e) { alert("Error"); } 
             };
@@ -2202,11 +2217,23 @@
         };
 
 
+                // ==========================================
+        // COMPONENTE PRINCIPAL (CARGA LIBRERÍAS)
+        // ==========================================
         const App = () => {
             const [screen, setScreen] = useState('loading');
             const [user, setUser] = useState(null);
 
             useEffect(() => {
+                // 1. CARGAR LIBRERÍA DE ALERTAS (SWEETALERT2)
+                if (!document.getElementById('swal-script')) {
+                    const script = document.createElement('script');
+                    script.id = 'swal-script';
+                    script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                    document.body.appendChild(script);
+                }
+
+                // 2. VERIFICAR SESIÓN
                 const loader = document.getElementById('loader-wrapper');
                 const unsub = auth.onAuthStateChanged(u => {
                     setTimeout(() => {
@@ -2214,8 +2241,13 @@
                              document.getElementById('loader-wrapper').classList.add('fade-out');
                              document.body.classList.add('app-loaded');
                         }
-                        if(u && (u.emailVerified || u.email === ADMIN_EMAIL)) { setUser(u); setScreen('welcome'); } 
-                        else { setUser(null); setScreen('auth'); }
+                        if(u && (u.emailVerified || u.email === "mrandroidtutorialeshd@gmail.com")) { 
+                            setUser(u); 
+                            setScreen('welcome'); 
+                        } else { 
+                            setUser(null); 
+                            setScreen('auth'); 
+                        }
                     }, 2000);
                 });
                 return () => unsub();
@@ -2227,6 +2259,7 @@
                     {screen === 'welcome' && <WelcomeScreen onNavigate={setScreen} onLogout={() => { auth.signOut(); setScreen('auth'); }} user={user} />}
                     {screen === 'services' && <ServicesMenu onNavigate={setScreen} user={user} />}
                     
+                    {/* EDITORES */}
                     {screen === 'editor' && <RecipeEditor onNavigate={setScreen} user={user} />}
                     {screen === 'note_editor' && <NoteEditor onNavigate={setScreen} user={user} />}
                     {screen === 'acta_editor' && <BirthCertificateEditor onNavigate={setScreen} user={user} />}
@@ -2236,8 +2269,8 @@
                     {screen === 'secundaria_editor' && <SecondaryCertificateEditor onNavigate={setScreen} user={user} />}
                     {screen === 'ine_editor' && <IneEditor onNavigate={setScreen} user={user} />}
                     
+                    {/* PANTALLAS EXTRAS */}
                     {screen === 'generated_pdfs' && <GeneratedDocsScreen onNavigate={setScreen} user={user} />} 
-
                     {screen === 'history' && <HistoryScreen onNavigate={setScreen} user={user} />}
                     {screen === 'admin' && <AdminPanel onNavigate={setScreen} />}
                 </>
